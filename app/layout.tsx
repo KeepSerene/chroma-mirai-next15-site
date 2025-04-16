@@ -23,7 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${monaSans.className} antialiased`}>{children}</body>
+      <body
+        className={`${monaSans.className} antialiased selection:bg-primary selection:text-primary-foreground`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
