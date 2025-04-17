@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import AuthFormWrapper from "@/components/authentication/AuthFormWrapper";
 
 export const metadata: Metadata = {
-  title: "Sign In",
+  title: "Sign Up",
 };
 
-function SignInPage() {
-  return <AuthFormWrapper authRoute="sign-in" />;
+function SignUpPage() {
+  return <AuthFormWrapper authRoute="sign-up" />;
 }
 
-export default SignInPage;
+export default SignUpPage;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useId, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const validPasswordRegEx = new RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
@@ -54,6 +56,10 @@ const formSchema = z
   );
 
 function SignUpForm({ classNameStr }: { classNameStr?: string }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const toastId = useId();
+
   useEffect(() => {
     document.querySelector<HTMLInputElement>("[data-name-input]")!.focus();
   }, []);
@@ -69,6 +75,19 @@ function SignUpForm({ classNameStr }: { classNameStr?: string }) {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+
+    const promise = () =>
+      new Promise((resolve) =>
+        setTimeout(() => resolve({ name: "Dhruv" }), 2000)
+      );
+    // Promise based sonner toast
+    toast.promise(promise, {
+      loading: "Please wait...",
+      success: (data: { name: string }) => `Yay! ${data.name}`,
+      error: "Error!",
+    });
+
     console.log(values);
   };
 
@@ -117,7 +136,7 @@ function SignUpForm({ classNameStr }: { classNameStr?: string }) {
                 </FormControl>
 
                 <FormDescription>
-                  Fill out your registered email address.
+                  Fill out your active email address.
                 </FormDescription>
 
                 <FormMessage />
@@ -175,8 +194,14 @@ function SignUpForm({ classNameStr }: { classNameStr?: string }) {
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Sign up
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            <>{isLoading && <Loader2 className="size-4 animate-spin" />}</>
+
+            <span>{isLoading ? "Signing up..." : "Sign up"}</span>
           </Button>
         </form>
       </Form>

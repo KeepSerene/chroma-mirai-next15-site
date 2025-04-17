@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body
         className={`${monaSans.className} antialiased selection:bg-primary selection:text-primary-foreground`}
       >
-        {children}
+        <main>{children}</main>
+
+        <Toaster richColors />
       </body>
     </html>
   );

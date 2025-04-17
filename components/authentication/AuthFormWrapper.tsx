@@ -1,78 +1,65 @@
-"use client";
-
-import { useState } from "react";
+import type { AuthFormRoute } from "@/types";
 import SignInForm from "./SignInForm";
-import { Button } from "../ui/button";
 import SignUpForm from "./SignUpForm";
 import Link from "next/link";
-import ResetPassword from "./ResetPassword";
+import ResetPasswordForm from "./ResetPasswordForm";
 
-type AuthFormMode = "sign-in" | "sign-up" | "reset-password";
-
-function AuthForm() {
-  const [mode, setMode] = useState<AuthFormMode>("sign-in");
-
+function AuthFormWrapper({ authRoute }: { authRoute: AuthFormRoute }) {
   return (
     <div className="space-y-4">
       <section className="text-center flex flex-col gap-2">
         <h1 className="text-2xl font-semibold capitalize tracking-tight">
-          {mode === "sign-in"
+          {authRoute === "sign-in"
             ? "Sign in"
-            : mode === "sign-up"
+            : authRoute === "sign-up"
             ? "Sign up"
             : "Reset password"}
         </h1>
 
         <p className="text-muted-foreground text-sm">
-          {mode === "sign-in"
+          {authRoute === "sign-in"
             ? "Enter your email address and password to log into your account."
-            : mode === "sign-up"
+            : authRoute === "sign-up"
             ? "Enter your name, email address, and set a password to create an account."
             : "Enter your registered email address to reset your password."}
         </p>
       </section>
 
       <>
-        {mode === "sign-in" && (
+        {authRoute === "sign-in" && (
           <>
             <SignInForm />
 
-            <div className="flex justify-between items-center">
-              <Button
-                type="button"
-                variant="link"
-                onClick={() => setMode("sign-up")}
-                className="p-0"
+            <div className="text-primary text-sm font-semibold flex justify-between items-center">
+              <Link
+                href="/sign-up"
+                className="hover:underline hover:underline-offset-4 focus-visible:underline focus-visible:underline-offset-4"
               >
                 Don't have an account? Sign up
-              </Button>
+              </Link>
 
-              <Button
-                type="button"
-                variant="link"
-                onClick={() => setMode("reset-password")}
-                className="p-0"
+              <Link
+                href="/reset-password"
+                className="hover:underline hover:underline-offset-4 focus-visible:underline focus-visible:underline-offset-4"
               >
                 Forgot password?
-              </Button>
+              </Link>
             </div>
           </>
         )}
       </>
 
       <>
-        {mode === "sign-up" && (
+        {authRoute === "sign-up" && (
           <>
             <SignUpForm />
 
-            <Button
-              type="button"
-              variant="link"
-              onClick={() => setMode("sign-in")}
-              className="block p-0 mx-auto"
+            <Link
+              href="/sign-in"
+              className="block w-max text-primary text-sm font-semibold mx-auto hover:underline hover:underline-offset-4 focus-visible:underline focus-visible:underline-offset-4"
             >
               Already have an account? Sign in
-            </Button>
+            </Link>
 
             <p className="text-muted-foreground text-sm text-center px-8">
               By clicking on Sign up, you agree to our{" "}
@@ -96,9 +83,16 @@ function AuthForm() {
       </>
 
       <>
-        {mode === "reset-password" && (
+        {authRoute === "reset-password" && (
           <>
-            <ResetPassword />
+            <ResetPasswordForm />
+
+            <Link
+              href="/sign-in"
+              className="block w-max text-primary text-sm font-semibold mx-auto hover:underline hover:underline-offset-4 focus-visible:underline focus-visible:underline-offset-4"
+            >
+              Sign in instead
+            </Link>
           </>
         )}
       </>
@@ -106,4 +100,4 @@ function AuthForm() {
   );
 }
 
-export default AuthForm;
+export default AuthFormWrapper;
