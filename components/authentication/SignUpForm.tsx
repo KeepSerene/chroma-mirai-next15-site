@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { signUpAction } from "@/lib/actions/auth.actions";
 import {
   Form,
   FormControl,
@@ -18,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const validPasswordRegEx = new RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
@@ -58,7 +60,7 @@ const formSchema = z
 function SignUpForm({ classNameStr }: { classNameStr?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const toastId = useId();
+  const router = useRouter();
 
   useEffect(() => {
     document.querySelector<HTMLInputElement>("[data-name-input]")!.focus();
@@ -74,21 +76,40 @@ function SignUpForm({ classNameStr }: { classNameStr?: string }) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
-    const promise = () =>
-      new Promise((resolve) =>
-        setTimeout(() => resolve({ name: "Dhruv" }), 2000)
-      );
-    // Promise based sonner toast
-    toast.promise(promise, {
+    const formData = new FormData();
+    formData.append("fullName", values.fullName);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+
+    const signUpActionPromise = signUpAction(formData);
+
+    toast.promise(signUpActionPromise, {
       loading: "Please wait...",
-      success: (data: { name: string }) => `Yay! ${data.name}`,
-      error: "Error!",
+      success: (response) => {
+        if (response.success) {
+          return "Account created successfully! Please verify your email address to sign in.";
+        } else {
+          throw new Error(response.errMsg);
+        }
+      },
+      error: (err) => {
+        return err?.message ?? "Failed to sign up!";
+      },
     });
 
-    console.log(values);
+    signUpActionPromise.then((response) => {
+      if (response.success) {
+        setIsLoading(false);
+        router.push("/sign-in");
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    // console.log(values);
   };
 
   return (

@@ -16,17 +16,18 @@ export async function updateSession(request: NextRequest) {
         },
 
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            request.cookies.set(name, value)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value);
+          });
 
           supabaseResponse = NextResponse.next({
             request,
           });
 
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            // Cookies from Supabase are added to this response
+            supabaseResponse.cookies.set(name, value, options);
+          });
         },
       },
     }
@@ -42,21 +43,22 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ========================= UNCOMMENT THIS SEGMENT ONCE DONE WITH TESTING! ===============================
+  // If an unauthenticated user is trying to access a protected route:
+  if (
+    !user &&
+    !request.nextUrl.pathname.startsWith("/sign-up") &&
+    !request.nextUrl.pathname.startsWith("/sign-in") &&
+    !request.nextUrl.pathname.startsWith("/reset-password") &&
+    !request.nextUrl.pathname.startsWith("/auth")
+  ) {
+    // No user, potentially respond by redirecting the user to the login page
+    const url = request.nextUrl.clone();
+    url.pathname = "/sign-in";
 
-  //   if (
-  //     !user &&
-  //     !request.nextUrl.pathname.startsWith("/sign-in") &&
-  //     !request.nextUrl.pathname.startsWith("/auth")
-  //   ) {
-  //     // No user, potentially respond by redirecting the user to the login page
-  //     const url = request.nextUrl.clone();
-  //     url.pathname = "/sign-in";
+    return NextResponse.redirect(url);
+  }
 
-  //     return NextResponse.redirect(url);
-  //   }
-
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
+  // IMPORTANT: You must return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
   // 1. Pass the request in it, like so:
   //    const myNewResponse = NextResponse.next({ request })
@@ -69,5 +71,6 @@ export async function updateSession(request: NextRequest) {
   // If this is not done, you may be causing the browser and server to go out
   // of sync and terminate the user's session prematurely!
 
+  // Finally, return this response with all cookies properly set
   return supabaseResponse;
 }

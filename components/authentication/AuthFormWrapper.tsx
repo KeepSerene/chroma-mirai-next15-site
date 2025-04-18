@@ -12,7 +12,7 @@ function AuthFormWrapper({ authRoute }: { authRoute: AuthFormRoute }) {
           {authRoute === "sign-in"
             ? "Sign in"
             : authRoute === "sign-up"
-            ? "Sign up"
+            ? "Create an account"
             : "Reset password"}
         </h1>
 

@@ -18,11 +18,12 @@ export async function signUpAction(
     },
   };
 
+  // Create account
   const { data, error } = await supabase.auth.signUp(userCredentials);
 
   return {
     data,
     success: !error,
-    error: error?.message ?? "Failed to sign up the user!",
+    errMsg: error?.message ?? "Failed to sign up the user!",
   };
 }
