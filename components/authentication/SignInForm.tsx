@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signInAction } from "@/lib/actions/auth.actions";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -16,6 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -27,6 +31,10 @@ const formSchema = z.object({
 });
 
 function SignInForm({ classNameStr }: { classNameStr?: string }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
   useEffect(() => {
     document.querySelector<HTMLInputElement>("[data-email-input]")!.focus();
   }, []);
@@ -39,8 +47,39 @@ function SignInForm({ classNameStr }: { classNameStr?: string }) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+
+    const formData = new FormData();
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+
+    const signInActionPromise = signInAction(formData);
+
+    toast.promise(signInActionPromise, {
+      loading: "Please wait...",
+      success: (response) => {
+        if (response.success) {
+          return "Signed in successfully! Happy exploring...";
+        } else {
+          throw new Error(response.errMsg);
+        }
+      },
+      error: (err) => {
+        return err?.message ?? "Failed to sign in!";
+      },
+    });
+
+    signInActionPromise.then((response) => {
+      if (response.success) {
+        setIsLoading(false);
+        router.push("/dashboard");
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    // console.log(values);
   };
 
   return (
@@ -84,13 +123,13 @@ function SignInForm({ classNameStr }: { classNameStr?: string }) {
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Set password"
+                    placeholder="Enter your password"
                     {...field}
                   />
                 </FormControl>
 
                 <FormDescription>
-                  Choose a strong password, at least 8 characters long.
+                  Fill out the password associated with this account.
                 </FormDescription>
 
                 <FormMessage />
@@ -98,8 +137,14 @@ function SignInForm({ classNameStr }: { classNameStr?: string }) {
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Sign in
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full flex items-center gap-2 disabled:opacity-70"
+          >
+            <>{isLoading && <Loader2 className="size-4 animate-spin" />}</>
+
+            <span>{isLoading ? "Signing in..." : "Sign in"}</span>
           </Button>
         </form>
       </Form>

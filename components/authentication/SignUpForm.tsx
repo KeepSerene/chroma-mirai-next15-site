@@ -2,8 +2,8 @@
 
 import { useEffect, useId, useState } from "react";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpAction } from "@/lib/actions/auth.actions";
 import {
   Form,
@@ -218,7 +218,7 @@ function SignUpForm({ classNameStr }: { classNameStr?: string }) {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full flex items-center gap-2 disabled:opacity-70"
           >
             <>{isLoading && <Loader2 className="size-4 animate-spin" />}</>
 
