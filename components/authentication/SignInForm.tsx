@@ -60,7 +60,7 @@ function SignInForm({ classNameStr }: { classNameStr?: string }) {
       loading: "Please wait...",
       success: (response) => {
         if (response.success) {
-          return "Signed in successfully! Happy exploring...";
+          return "Signed in successfully! Happy exploring!";
         } else {
           throw new Error(response.errMsg);
         }
