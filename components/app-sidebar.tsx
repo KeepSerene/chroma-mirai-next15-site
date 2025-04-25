@@ -24,7 +24,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 // Sidebar nav items
-const data = [
+const sidebarNavItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -80,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={data} />
+        <NavMain items={sidebarNavItems} />
       </SidebarContent>
 
       <SidebarFooter>{/* <NavUser user={data.user} /> */}</SidebarFooter>
