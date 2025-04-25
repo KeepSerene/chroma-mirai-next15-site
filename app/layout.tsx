@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${monaSans.className} antialiased selection:bg-primary selection:text-primary-foreground`}
+        className={`min-h-dvh ${monaSans.className} antialiased caret-primary selection:bg-primary selection:text-primary-foreground`}
       >
         <main>{children}</main>
 

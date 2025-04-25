@@ -37,6 +37,7 @@ export async function signUpAction(
 
     if (error) {
       console.error("SignUp error:", error);
+
       return {
         data: null,
         success: false,
@@ -49,15 +50,15 @@ export async function signUpAction(
       success: true,
       errMsg: "",
     };
-  } catch (error) {
-    console.error("Unexpected error during signup:", error);
+  } catch (err) {
+    console.error("Unexpected error during signup:", err);
 
     return {
       data: null,
       success: false,
       errMsg:
-        error instanceof Error
-          ? error.message
+        err instanceof Error
+          ? err.message
           : "An unexpected error occurred during sign up",
     };
   }
@@ -92,6 +93,7 @@ export async function signInAction(
 
     if (error) {
       console.error("SignIn error:", error);
+
       return {
         data: null,
         success: false,
@@ -104,14 +106,14 @@ export async function signInAction(
       success: true,
       errMsg: "",
     };
-  } catch (error) {
-    console.error("Unexpected error during signin:", error);
+  } catch (err) {
+    console.error("Unexpected error during signin:", err);
     return {
       data: null,
       success: false,
       errMsg:
-        error instanceof Error
-          ? error.message
+        err instanceof Error
+          ? err.message
           : "An unexpected error occurred during sign in",
     };
   }
@@ -127,8 +129,8 @@ export async function signOutAction(): Promise<void> {
       // Even if there's an error, we still attempt to redirect the user
       // as they likely should be logged out of the client-side session
     }
-  } catch (error) {
-    console.error("Error during signout:", error);
+  } catch (err) {
+    console.error("Error during signout:", err);
   } finally {
     // The redirect function terminates execution, so no return is needed
     // Next.js will handle the special redirect related error it throws in server actions

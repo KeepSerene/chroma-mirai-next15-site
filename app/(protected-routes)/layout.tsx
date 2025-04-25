@@ -14,7 +14,10 @@ function ProtectedRouteLayout({
       <AppSidebar />
 
       <SidebarInset>
-        <SidebarTrigger type="button" className="-ml-1" />
+        <SidebarTrigger
+          type="button"
+          className="transition-colors hover:text-primary focus-visible:text-primary"
+        />
 
         {/* <SignOutButton /> */}
 

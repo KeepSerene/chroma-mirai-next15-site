@@ -199,9 +199,9 @@
   }
 
   body {
-    @apply bg-background text-foreground caret-primary;
+    @apply bg-background text-foreground;
 
-    /* For firefox */
+    /* For Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--primary) var(--background);
   }
@@ -221,15 +221,5 @@
 
   button {
     cursor: pointer;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  body {
-    @apply bg-background text-foreground;
   }
 }
