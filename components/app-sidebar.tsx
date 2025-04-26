@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
   CreditCard,
@@ -21,50 +19,25 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/server";
 
-// Sidebar nav items
-const sidebarNavItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: SquareTerminal,
-  },
-  {
-    title: "Generate Image",
-    url: "/generate-image",
-    icon: Image,
-  },
-  {
-    title: "My Models",
-    url: "/models",
-    icon: Frame,
-  },
-  {
-    title: "Train Model",
-    url: "/train-model",
-    icon: Layers,
-  },
-  {
-    title: "My Images",
-    url: "/gallery",
-    icon: Images,
-  },
-  {
-    title: "Billing",
-    url: "/billing",
-    icon: CreditCard,
-  },
-  {
-    title: "Account Settings",
-    url: "/account-settings",
-    icon: Settings2,
-  },
-];
+export async function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  let userDetails = null;
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    userDetails = user;
+  } catch (err) {
+    console.error("Error fetching user details:", err);
+  }
+
   return (
-    <Sidebar collapsible="icon" {...props} className={cn("bg-background")}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <Link href="/" className="flex items-center gap-2">
           <span className="size-8 aspect-square bg-sidebar-primary text-sidebar-primary-foreground rounded-lg flex justify-center items-center">
@@ -80,10 +53,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={sidebarNavItems} />
+        <NavMain />
       </SidebarContent>
 
-      <SidebarFooter>{/* <NavUser user={data.user} /> */}</SidebarFooter>
+      <SidebarFooter>
+        {userDetails && (
+          <NavUser
+            user={{
+              name: userDetails.user_metadata?.fullName ?? "User",
+              email: userDetails.email ?? "",
+              avatar: userDetails.user_metadata?.avatar ?? "",
+            }}
+          />
+        )}
+      </SidebarFooter>
     </Sidebar>
   );
 }

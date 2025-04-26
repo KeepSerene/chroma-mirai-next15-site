@@ -12,8 +12,55 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import {
+  CreditCard,
+  Frame,
+  Image,
+  Images,
+  Layers,
+  Settings2,
+  SquareTerminal,
+} from "lucide-react";
 
-export function NavMain({ items }: { items: SidebarNavItem[] }) {
+const sidebarNavItems: SidebarNavItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: SquareTerminal,
+  },
+  {
+    title: "Generate Image",
+    url: "/generate-image",
+    icon: Image,
+  },
+  {
+    title: "My Models",
+    url: "/models",
+    icon: Frame,
+  },
+  {
+    title: "Train Model",
+    url: "/train-model",
+    icon: Layers,
+  },
+  {
+    title: "My Images",
+    url: "/gallery",
+    icon: Images,
+  },
+  {
+    title: "Billing",
+    url: "/billing",
+    icon: CreditCard,
+  },
+  {
+    title: "Account Settings",
+    url: "/account-settings",
+    icon: Settings2,
+  },
+];
+
+export function NavMain() {
   const pathname = usePathname();
 
   const checkIsActive = (item: SidebarNavItem) => {
@@ -26,10 +73,10 @@ export function NavMain({ items }: { items: SidebarNavItem[] }) {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>AI Studio</SidebarGroupLabel>
 
       <SidebarMenu>
-        {items.map((item) => (
+        {sidebarNavItems.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton tooltip={item.title} asChild>
               <Link

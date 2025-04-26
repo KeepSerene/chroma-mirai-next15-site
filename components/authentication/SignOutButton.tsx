@@ -11,7 +11,7 @@ function SignOutButton() {
     <button
       type="button"
       onClick={handleSignOut}
-      className="w-max text-destructive"
+      className="w-max text-destructive capitalize"
     >
       Sign out
     </button>
